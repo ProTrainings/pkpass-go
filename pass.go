@@ -83,6 +83,7 @@ func key(tempDir, password string, cert io.Reader) error {
 		"-nocerts",
 		"-out",
 		fmt.Sprintf("%s/key.pem", tempDir),
+		"-legacy",
 		"-passin",
 		fmt.Sprintf("pass:%s", password),
 		"-passout",
@@ -91,6 +92,8 @@ func key(tempDir, password string, cert io.Reader) error {
 	return cmd.Run()
 }
 
+// openssl pkcs12 -in Certificates.p12 -out certificate.pem -clcerts -nokeys -legacy -password 'pass:password'
+
 // key will generate the certificate's pem file that is needed in the openssl smime command
 func pem(tempDir, password string, cert io.Reader) error {
 	cmd := exec.Command(
@@ -98,10 +101,11 @@ func pem(tempDir, password string, cert io.Reader) error {
 		"pkcs12",
 		"-in",
 		fmt.Sprintf("%s/certificates.p12", tempDir),
-		"-clcerts",
-		"-nokeys",
 		"-out",
 		fmt.Sprintf("%s/certificate.pem", tempDir),
+		"-clcerts",
+		"-nokeys",
+		"-legacy",
 		"-passin",
 		fmt.Sprintf("pass:%s", password),
 	)
